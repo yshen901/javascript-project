@@ -96,7 +96,7 @@ class Map {
     }
   }
 
-  canPlace() {
+  canPlace(buildingSymbol, ) {
 
   }
 
