@@ -20,27 +20,22 @@ export const resources = {
 export const buildings = {
   HQ: {
     SYMBOL: "HQ",
-    REQUIRE: null,
-  },
-  BC: {
-    SYMBOL: "BC",
-    REQUIRE: {
-      HQ: "EXIST",
-      B: "ADJACENT",
-    }
   },
   AC: {
     SYMBOL: "AC",
-    REQUIRE: {
-      HQ: "EXIST",
-      A: "ADJACENT",
-    }
-  }
+    REQUIRE: "HQ",
+    ADJACENT: "A",
+  },
+  BC: {
+    SYMBOL: "BC",
+    REQUIRE: "HQ",
+    ADJACENT: "B",
+  },
 }
 
 export const buildingParams = {
-  Y: this.mapSize.Y + this.mapSize.HEIGHT + 10,
-  X: this.mapSize.X + 20,
+  Y: mapSize.Y + mapSize.HEIGHT + 10,
+  X: mapSize.X + 20,
   BUTTON_SIZE: 40,
   SYMBOLS: ["HQ", "AC", "BC"],
 };

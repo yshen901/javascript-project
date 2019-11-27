@@ -8,6 +8,8 @@ class Map {
     this.resources = resources;
     this.buildings = buildings;
 
+    this.exists = {};
+
     this.grid = new Array(Math.floor(this.map.HEIGHT / this.map.SQUARE_SIZE));
     for (let y = 0; y < Math.floor(this.map.HEIGHT / this.map.SQUARE_SIZE); y++)
       this.grid[y] = new Array(Math.floor(this.map.WIDTH / this.map.SQUARE_SIZE));
@@ -40,27 +42,19 @@ class Map {
   }
 
   placeResources() {
-    let { X, Y, HEIGHT, WIDTH, SQUARE_SIZE } = this.map;
-    let { A, B } = this.resources;
+    let { HEIGHT, WIDTH, SQUARE_SIZE } = this.map;
+    let symbols = Object.keys(this.resources);
 
-    let counter = 0;
-    let x, y;
-
-    while (counter < A.AMOUNT) {
-      y = Math.floor(Math.random() * Math.floor(HEIGHT / SQUARE_SIZE));
-      x = Math.floor(Math.random() * Math.floor(WIDTH / SQUARE_SIZE));
-      if (this.grid[y][x]) continue;
-      this.grid[y][x] = new Resource([y, x], A.SYMBOL);
-      counter++;
-    }
-
-    counter = 0;
-    while (counter < B.AMOUNT) {
-      y = Math.floor(Math.random() * Math.floor(HEIGHT / SQUARE_SIZE));
-      x = Math.floor(Math.random() * Math.floor(WIDTH / SQUARE_SIZE));
-      if (this.grid[y][x]) continue;
-      this.grid[y][x] = new Resource([y, x], B.SYMBOL);
-      counter++;
+    for (let i = 0; i < symbols.length; i++) {
+      let counter = 0;
+      let x, y;
+      while (counter < this.resources[symbols[i]].AMOUNT) {
+        y = Math.floor(Math.random() * Math.floor(HEIGHT / SQUARE_SIZE));
+        x = Math.floor(Math.random() * Math.floor(WIDTH / SQUARE_SIZE));
+        if (this.grid[y][x]) continue;
+        this.grid[y][x] = new Resource([y, x], symbols[i]);
+        counter++;
+      }
     }
   }
 
@@ -88,16 +82,37 @@ class Map {
     ];
 
     if (!this.getPos(gridPos)) {
-      if (buildingSymbol) {
+      if (buildingSymbol && this.canPlace(gridPos, buildingSymbol)) {
         let building = new Building(gridPos, buildingSymbol);
-        this.dropVal(gridPos, building);
+        this.build(gridPos, building);
         this.drawElements(); // TODO: Make this more specialized by just redrawing one square
       }
     }
   }
 
-  canPlace(buildingSymbol, ) {
+  canPlace(pos, symbol) {
+    let { buildings, exists } = this;
+    switch(symbol) {
+      case "HQ": return true;
+      case "AC":
+      case "BC":
+        if (!exists[buildings[symbol].REQUIRE]) return false;
+        if (!this.hasAdjacent(pos, buildings[symbol].ADJACENT)) return false;
+        console.log("adjacent");
+        return true;
+      default:
+        console.log(symbol);
+        return false;
+    }
+  }
 
+  hasAdjacent(pos, symbol) {
+    let { grid } = this;
+    let [y, x] = pos;
+    if (grid[y + 1] && grid[y + 1][x] && grid[y + 1][x].getSymbol() === symbol) return true;
+    if (grid[y - 1] && grid[y - 1][x] && grid[y-1][x].getSymbol() === symbol) return true;
+    if (grid[y][x + 1] && grid[y][x + 1].getSymbol() === symbol) return true;
+    if (grid[y][x - 1] && grid[y][x - 1].getSymbol() === symbol) return true;
   }
 
   getPos(pos) {
@@ -106,11 +121,12 @@ class Map {
       return this.grid[y][x];
   }
 
-  dropVal(pos, val) {
+  build(pos, building) {
     let [y, x] = pos;
-    let droppable = !this.grid[y][x];
-    if (droppable) this.grid[y][x] = val;
-    return droppable;
+    if (!this.grid[y][x]) {
+      this.grid[y][x] = building;
+      this.exists[building.getSymbol()] = true;
+    }
   }
 }
 
