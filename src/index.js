@@ -1,8 +1,9 @@
 import Map from './map';
+import Game from './game';
 
 document.addEventListener("DOMContentLoaded", function () {
   const canvasEl = document.getElementsByTagName("canvas")[0];
   const ctx = canvasEl.getContext("2d");
   
-  const map = new Map(ctx, canvasEl);
+  const game = new Game(ctx, canvasEl);
 });

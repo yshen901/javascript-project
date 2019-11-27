@@ -86,25 +86,51 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./images/Crystal.jpg":
-/*!****************************!*\
-  !*** ./images/Crystal.jpg ***!
-  \****************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/***/ "./src/building.js":
+/*!*************************!*\
+  !*** ./src/building.js ***!
+  \*************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-eval("throw new Error(\"Module parse failed: Unexpected character '�' (1:0)\\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\\n(Source code omitted for this binary file)\");\n\n//# sourceURL=webpack:///./images/Crystal.jpg?");
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _resource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./resource */ \"./src/resource.js\");\n\n\nclass Building extends _resource__WEBPACK_IMPORTED_MODULE_0__[\"default\"] {\n  constructor(pos, symbol) {\n    super(pos, symbol);\n    this.level = 0;\n  }\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Building);\n\n//# sourceURL=webpack:///./src/building.js?");
 
 /***/ }),
 
-/***/ "./images/magic_tree.jpg":
+/***/ "./src/buildings_list.js":
 /*!*******************************!*\
-  !*** ./images/magic_tree.jpg ***!
+  !*** ./src/buildings_list.js ***!
   \*******************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-eval("throw new Error(\"Module parse failed: Unexpected character '�' (1:0)\\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\\n(Source code omitted for this binary file)\");\n\n//# sourceURL=webpack:///./images/magic_tree.jpg?");
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\nclass BuildingsList {\n  constructor(ctx, buildingParams) {\n    this.ctx = ctx;\n    this.buildingParams = buildingParams;\n\n    this.drawBuildingsList();\n  }\n\n  // Draws the buttons\n  drawBuildingsList() {\n    let { ctx } = this;\n    let { Y, X, BUTTON_SIZE, SYMBOLS } = this.buildingParams;\n\n    for (let i = 0; i < SYMBOLS.length; i++) {\n      ctx.fillStyle = i % 2 === 0 ? \"black\" : \"gray\";\n      ctx.fillRect(X + i*BUTTON_SIZE, Y, BUTTON_SIZE, BUTTON_SIZE);\n    }\n\n    ctx.font = \"15px Arial\";\n    ctx.textAlign = \"center\";\n    ctx.fillStyle = \"white\";\n    for (let i = 0; i < SYMBOLS.length; i++) {\n      ctx.fillText(SYMBOLS[i], X + i*BUTTON_SIZE + BUTTON_SIZE*0.5, Y + BUTTON_SIZE*0.6);\n    }\n  }\n\n  // Takes in \n  handleClick(pos) {\n    let { Y, X, BUTTON_SIZE, SYMBOLS } = this.buildingParams;\n    let [y, x] = pos;\n\n    let symbolIdx = Math.floor((x - X) / BUTTON_SIZE);\n    if (SYMBOLS[symbolIdx]) return SYMBOLS[symbolIdx]\n  }\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (BuildingsList);\n\n//# sourceURL=webpack:///./src/buildings_list.js?");
+
+/***/ }),
+
+/***/ "./src/game.js":
+/*!*********************!*\
+  !*** ./src/game.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _game_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game_view */ \"./src/game_view.js\");\n\n\nclass Game {\n  constructor(ctx, canvasEl) {\n    this.gameView = new _game_view__WEBPACK_IMPORTED_MODULE_0__[\"default\"](ctx, canvasEl);\n  }\n\n  handleClick(e) {\n    let offset = 10;\n    let pos = [e.y - offset, e.x - offset];\n    this.gameView.handleClick(pos);\n  }\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Game);\n\n//# sourceURL=webpack:///./src/game.js?");
+
+/***/ }),
+
+/***/ "./src/game_view.js":
+/*!**************************!*\
+  !*** ./src/game_view.js ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _map__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./map */ \"./src/map.js\");\n/* harmony import */ var _buildings_list__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./buildings_list */ \"./src/buildings_list.js\");\n\n\n\nclass GameView {\n  constructor(ctx, canvasEl) {\n    this.ctx = ctx;\n    this.canvasEl = canvasEl;\n\n    this.mapSize = {\n      X: 60,\n      Y: 60,\n      WIDTH: 1200,\n      HEIGHT: 640,\n      SQUARE_SIZE: 50\n    };\n\n    this.buildingParams = {\n      Y: this.mapSize.Y + this.mapSize.HEIGHT + 10,\n      X: this.mapSize.X + 20,\n      BUTTON_SIZE: 40,\n      SYMBOLS: [\"HQ\", \"AC\", \"BC\"],\n    };\n\n    this.resources = {\n      A: {\n        SYMBOL: \"A\",\n        AMOUNT: 5,\n      },\n      B: {\n        SYMBOL: \"B\",\n        AMOUNT: 5,\n      }\n    }\n\n    this.buildings = {\n      HQ: {\n        SYMBOL: \"HQ\",\n        REQUIRE: null,\n      },\n      BC: {\n        SYMBOL: \"BC\",\n        REQUIRE: {\n          HQ: \"EXIST\",\n          B: \"ADJACENT\",\n        }\n      },\n      AC: {\n        SYMBOL: \"AC\",\n        REQUIRE: {\n          HQ: \"EXIST\", \n          A: \"ADJACENT\",\n        }\n      }\n    }\n\n    this.building = null;\n\n    this.setupCanvas();\n    this.map = new _map__WEBPACK_IMPORTED_MODULE_0__[\"default\"](ctx, this.mapSize, this.resources, this.buildings);\n    this.buildingsList = new _buildings_list__WEBPACK_IMPORTED_MODULE_1__[\"default\"](ctx, this.buildingParams);\n  }\n\n  setupCanvas() {\n    let { canvasEl, ctx } = this;\n    let { HEIGHT, WIDTH, Y, X } = this.mapSize;\n    canvasEl.width = WIDTH + 2*X;\n    canvasEl.height = HEIGHT + 2*Y;\n    ctx.fillStyle = \"lightgray\";\n    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);\n\n    canvasEl.addEventListener(\"click\", (e) => this.handleClick(e));\n  }\n\n  handleClick(e) {\n    let offset = 10;\n    let pos = [e.y - offset, e.x - offset];\n    if (this.insideMap(pos)) {\n      console.log(pos, this.building);\n      this.map.handleClick(pos, this.building);\n      this.building = null;\n    } else if (this.insideBuildingsList(pos)) {\n      this.building = this.buildingsList.handleClick(pos);\n      console.log(this.building);\n    } else\n      this.building = null;\n  }\n\n  insideMap(pos) {\n    let [y, x] = pos;\n    let { mapSize } = this;\n\n    if (x < mapSize.X || x > mapSize.X + mapSize.WIDTH) return false;\n    if (y < mapSize.Y || y > mapSize.Y + mapSize.HEIGHT) return false;\n    return true;\n  }\n\n  insideBuildingsList(pos) {\n    let [y, x] = pos;\n    let { Y, X, BUTTON_SIZE, SYMBOLS } = this.buildingParams;\n\n    if (x < X || x > X + BUTTON_SIZE*SYMBOLS.length) return false;\n    if (y < Y || y > Y + BUTTON_SIZE) return false;\n    return true;\n  }\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (GameView);\n\n//# sourceURL=webpack:///./src/game_view.js?");
 
 /***/ }),
 
@@ -116,7 +142,7 @@ eval("throw new Error(\"Module parse failed: Unexpected character '�' (1:0)\\n
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _map__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./map */ \"./src/map.js\");\n\n\ndocument.addEventListener(\"DOMContentLoaded\", function () {\n  const canvasEl = document.getElementsByTagName(\"canvas\")[0];\n  const ctx = canvasEl.getContext(\"2d\");\n  \n  const map = new _map__WEBPACK_IMPORTED_MODULE_0__[\"default\"](ctx, canvasEl);\n});\n\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _map__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./map */ \"./src/map.js\");\n/* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./game */ \"./src/game.js\");\n\n\n\ndocument.addEventListener(\"DOMContentLoaded\", function () {\n  const canvasEl = document.getElementsByTagName(\"canvas\")[0];\n  const ctx = canvasEl.getContext(\"2d\");\n  \n  const game = new _game__WEBPACK_IMPORTED_MODULE_1__[\"default\"](ctx, canvasEl);\n});\n\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ }),
 
@@ -124,11 +150,23 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _map
 /*!********************!*\
   !*** ./src/map.js ***!
   \********************/
-/*! exports provided: MAP_WIDTH, MAP_HEIGHT, default */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"MAP_WIDTH\", function() { return MAP_WIDTH; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"MAP_HEIGHT\", function() { return MAP_HEIGHT; });\n/* harmony import */ var _images_Crystal_jpg__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../images/Crystal.jpg */ \"./images/Crystal.jpg\");\n/* harmony import */ var _images_Crystal_jpg__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_images_Crystal_jpg__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _images_magic_tree_jpg__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../images/magic_tree.jpg */ \"./images/magic_tree.jpg\");\n/* harmony import */ var _images_magic_tree_jpg__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_images_magic_tree_jpg__WEBPACK_IMPORTED_MODULE_1__);\nconst MAP_WIDTH = 12;\nconst MAP_HEIGHT = 8;\n\nconst RESOURCE_AMOUNT_A = 10;\nconst RESOURCE_AMOUNT_B = 10;\n\nconst RESOURCE_A = \"A\";\nconst RESOURCE_B = \"B\";\n\n\n\n\nclass Map {\n  constructor (ctx, canvasEl) {\n    this.ctx = ctx;\n    this.canvasEl = canvasEl;\n\n    this.grid = new Array(MAP_WIDTH);\n    for (let i = 0; i < this.grid.length; i++)\n      this.grid[i] = new Array(MAP_HEIGHT);\n\n    this.drawGrid();\n    this.placeResources();\n    console.log(this.grid);\n  }\n\n  drawGrid() {\n    let { canvasEl, ctx } = this;\n\n    canvasEl.width = MAP_WIDTH * 100;\n    canvasEl.height = MAP_HEIGHT * 100;\n\n    ctx.fillStyle = \"black\";\n    ctx.fillRect(0, 0, MAP_WIDTH*100, MAP_HEIGHT*100);\n\n    ctx.strokeStyle = \"gray\";\n    ctx.lineWidth= 1;\n    for (let i = 100; i < MAP_WIDTH*100; i += 100) {\n      ctx.moveTo(i, 0);\n      ctx.lineTo(i, MAP_HEIGHT*100);\n      ctx.stroke();\n    }\n\n    for (let i = 100; i < MAP_HEIGHT*100; i += 100) {\n      ctx.moveTo(0, i);\n      ctx.lineTo(MAP_WIDTH*100, i);\n      ctx.stroke();\n    }\n  }\n\n  placeResources() {\n    let counter = 0;\n    let x, y;\n\n    while (counter < RESOURCE_AMOUNT_A) {\n      x = Math.floor(Math.random() * MAP_WIDTH);\n      y = Math.floor(Math.random() * MAP_HEIGHT);\n      if (this.grid[x][y]) continue;\n      this.grid[x][y] = RESOURCE_A;\n      counter++;\n    }\n\n    counter = 0;\n    while (counter < RESOURCE_AMOUNT_B) {\n      x = Math.floor(Math.random() * MAP_WIDTH);\n      y = Math.floor(Math.random() * MAP_HEIGHT);\n      if (this.grid[x][y]) continue;\n      this.grid[x][y] = RESOURCE_B;\n      counter++;\n    }\n  }\n\n  drawResources() {\n    \n  }\n\n  grid(x, y) {\n    return this.grid[x][y];\n  }\n\n  setGrid(x, y, val) {\n    this.grid[x][y] = val;\n  }\n}\n\n\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Map);\n\n//# sourceURL=webpack:///./src/map.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _resource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./resource */ \"./src/resource.js\");\n/* harmony import */ var _building__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./building */ \"./src/building.js\");\n\n\n\nclass Map {\n  constructor(ctx, map, resources, buildings) {\n    this.ctx = ctx;\n    this.map = map;\n    this.resources = resources;\n    this.buildings = buildings;\n\n    this.grid = new Array(Math.floor(this.map.HEIGHT / this.map.SQUARE_SIZE));\n    for (let y = 0; y < Math.floor(this.map.HEIGHT / this.map.SQUARE_SIZE); y++)\n      this.grid[y] = new Array(Math.floor(this.map.WIDTH / this.map.SQUARE_SIZE));\n\n    this.drawGrid();\n    this.placeResources();\n    this.drawElements();\n  }\n\n  drawGrid() {\n    let { ctx } = this;\n    let { X, Y, WIDTH, HEIGHT, SQUARE_SIZE } = this.map;\n\n    ctx.fillStyle = \"black\";\n    ctx.fillRect(X, Y, WIDTH, HEIGHT);\n\n    ctx.strokeStyle = \"gray\";\n    ctx.lineWidth = 1;\n    for (let x = SQUARE_SIZE; x < WIDTH; x += SQUARE_SIZE) {\n      ctx.moveTo(x + X, Y);\n      ctx.lineTo(x + X, HEIGHT + Y);\n      ctx.stroke();\n    }\n\n    for (let y = SQUARE_SIZE; y < HEIGHT; y += SQUARE_SIZE) {\n      ctx.moveTo(X, y + Y);\n      ctx.lineTo(WIDTH + X, y + Y);\n      ctx.stroke();\n    }\n  }\n\n  placeResources() {\n    let { X, Y, HEIGHT, WIDTH, SQUARE_SIZE } = this.map;\n    let { A, B } = this.resources;\n\n    let counter = 0;\n    let x, y;\n\n    while (counter < A.AMOUNT) {\n      y = Math.floor(Math.random() * Math.floor(HEIGHT / SQUARE_SIZE));\n      x = Math.floor(Math.random() * Math.floor(WIDTH / SQUARE_SIZE));\n      if (this.grid[y][x]) continue;\n      this.grid[y][x] = new _resource__WEBPACK_IMPORTED_MODULE_0__[\"default\"]([y, x], A.SYMBOL);\n      counter++;\n    }\n\n    counter = 0;\n    while (counter < B.AMOUNT) {\n      y = Math.floor(Math.random() * Math.floor(HEIGHT / SQUARE_SIZE));\n      x = Math.floor(Math.random() * Math.floor(WIDTH / SQUARE_SIZE));\n      if (this.grid[y][x]) continue;\n      this.grid[y][x] = new _resource__WEBPACK_IMPORTED_MODULE_0__[\"default\"]([y, x], B.SYMBOL);\n      counter++;\n    }\n  }\n\n  drawElements() {\n    let { ctx, grid } = this;\n    let { X, Y, HEIGHT, WIDTH, SQUARE_SIZE } = this.map;\n\n    ctx.font = `${SQUARE_SIZE/2}px Arial`;\n    ctx.textAlign = \"center\";\n    ctx.fillStyle = \"white\";\n    for (let y = 0; y < Math.floor(HEIGHT / SQUARE_SIZE); y++) {\n      for (let x = 0; x < Math.floor(WIDTH / SQUARE_SIZE); x++) {\n        if (grid[y][x])\n          ctx.fillText(grid[y][x].getSymbol(), x*SQUARE_SIZE + SQUARE_SIZE*0.5 + X, y*SQUARE_SIZE + SQUARE_SIZE*0.7 + Y);\n      }\n    }\n  }\n\n  handleClick(pos, buildingSymbol) {\n    let { X, Y, SQUARE_SIZE } = this.map;\n\n    let gridPos = [\n      Math.floor((pos[0] - Y) / SQUARE_SIZE), \n      Math.floor((pos[1] - X) / SQUARE_SIZE)\n    ];\n\n    if (!this.getPos(gridPos)) {\n      if (buildingSymbol) {\n        let building = new _building__WEBPACK_IMPORTED_MODULE_1__[\"default\"](gridPos, buildingSymbol);\n        this.dropVal(gridPos, building);\n        this.drawElements(); // TODO: Make this more specialized by just redrawing one square\n      }\n    }\n  }\n\n  canPlace() {\n\n  }\n\n  getPos(pos) {\n    let [y, x] = pos;\n    if (this.grid[y])\n      return this.grid[y][x];\n  }\n\n  dropVal(pos, val) {\n    let [y, x] = pos;\n    let droppable = !this.grid[y][x];\n    if (droppable) this.grid[y][x] = val;\n    return droppable;\n  }\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Map);\n\n//# sourceURL=webpack:///./src/map.js?");
+
+/***/ }),
+
+/***/ "./src/resource.js":
+/*!*************************!*\
+  !*** ./src/resource.js ***!
+  \*************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\nclass Resource {\n  constructor(pos, symbol) {\n    this.pos = pos;\n    this.symbol = symbol;\n    this.deletable = false;\n  }\n\n  getSymbol() { return this.symbol; }\n\n  getPos() { return this.pos; }\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Resource);\n\n//# sourceURL=webpack:///./src/resource.js?");
 
 /***/ })
 
