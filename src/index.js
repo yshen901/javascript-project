@@ -1,4 +1,3 @@
-import Map from './map';
 import Game from './game';
 
 document.addEventListener("DOMContentLoaded", function () {

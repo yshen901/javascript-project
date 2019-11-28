@@ -1,4 +1,4 @@
-class Resource {
+class StaticObject {
   constructor(pos, symbol) {
     this.pos = pos;
     this.symbol = symbol;
@@ -10,4 +10,4 @@ class Resource {
   getPos() { return this.pos; }
 }
 
-export default Resource;
+export default StaticObject;

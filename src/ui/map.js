@@ -1,5 +1,6 @@
-import Resource from './resource';
-import Building from "./building";
+import Resource from '../buildings/resource';
+import ResourceCollector from "../buildings/resource_collector";
+import HQ from "../buildings/hq";
 
 class Map {
   constructor(ctx, map, resources, buildings) {
@@ -83,8 +84,7 @@ class Map {
 
     if (!this.getPos(gridPos)) {
       if (buildingSymbol && this.canPlace(gridPos, buildingSymbol)) {
-        let building = new Building(gridPos, buildingSymbol);
-        this.build(gridPos, building);
+        this.build(gridPos, buildingSymbol);
         this.drawElements(); // TODO: Make this more specialized by just redrawing one square
       }
     }
@@ -121,12 +121,23 @@ class Map {
       return this.grid[y][x];
   }
 
-  build(pos, building) {
+  build(pos, buildingSymbol) {
     let [y, x] = pos;
+    let building;
+    switch (buildingSymbol) {
+      case "HQ": 
+        building = new HQ(pos, buildingSymbol); break;
+      case "AC":
+      case "BC":
+        building = new ResourceCollector(pos, buildingSymbol); break; 
+    }
+
     if (!this.grid[y][x]) {
       this.grid[y][x] = building;
       this.exists[building.getSymbol()] = true;
     }
+
+    debugger;
   }
 }
 

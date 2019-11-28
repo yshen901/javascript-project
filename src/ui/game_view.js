@@ -1,7 +1,7 @@
 import Map from './map';
 import BuildingsList from './buildings_list';
 
-import { mapSize, resources, buildings, buildingParams } from './settings';
+import { mapSize, resources, buildings, buildingParams } from '../settings';
 
 class GameView {
   constructor(ctx, canvasEl) {
@@ -62,6 +62,10 @@ class GameView {
     if (y < Y || y > Y + BUTTON_SIZE) return false;
     return true;
   }
+
+
+  // GETTERS
+  getMap() { return this.map; }
 }
 
 export default GameView;
