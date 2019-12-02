@@ -13,6 +13,8 @@ class StaticObject {
   connectable() {
     return false;
   }
+
+  tick() {};
 }
 
 export default StaticObject;

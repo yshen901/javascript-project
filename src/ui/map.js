@@ -1,6 +1,7 @@
 import Resource from '../buildings/static_object';
 import ResourceCollector from "../buildings/resource_collector";
 import HQ from "../buildings/hq";
+import Connector from '../buildings/connector';
 import Graph from '../data_structures/graph';
 
 class Map {
@@ -80,7 +81,7 @@ class Map {
       let [ y1, x1 ] = node.getPos();
       for (let otherNode of otherNodes) {
         let [ y2, x2 ] = otherNode.getPos();
-        debugger;
+        // debugger;
         ctx.moveTo(x1*SQUARE_SIZE + SQUARE_SIZE/2 + X, y1*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
         ctx.lineTo(x2*SQUARE_SIZE + SQUARE_SIZE/2 + X, y2*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
         ctx.stroke();
@@ -128,6 +129,9 @@ class Map {
         if (!exists[buildings[symbol].REQUIRE]) return false;
         if (!this.hasAdjacent(pos, buildings[symbol].ADJACENT)) return false;
         return true;
+      case "O":
+        if (!exists[buildings[symbol].REQUIRE]) return false;
+        return true;
       default:
         return false;
     }
@@ -160,6 +164,8 @@ class Map {
       case "AC":
       case "BC":
         building = new ResourceCollector(pos, buildingSymbol); break; 
+      case "O":
+        building = new Connector(pos, buildingSymbol); break;
     }
 
     this.grid[y][x] = building;

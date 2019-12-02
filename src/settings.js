@@ -2,7 +2,7 @@ export const mapSize = {
   X: 60,
   Y: 60,
   WIDTH: 1200,
-  HEIGHT: 640,
+  HEIGHT: 600,
   SQUARE_SIZE: 50
 };
 
@@ -31,11 +31,15 @@ export const buildings = {
     REQUIRE: "HQ",
     ADJACENT: "B",
   },
+  O: {
+    SYMBOL: "O",
+    REQUIRE: "HQ",
+  }
 }
 
 export const buildingParams = {
   Y: mapSize.Y + mapSize.HEIGHT + 10,
   X: mapSize.X + 20,
   BUTTON_SIZE: 40,
-  SYMBOLS: ["HQ", "AC", "BC"],
+  SYMBOLS: ["HQ", "AC", "BC", "O"],
 };
