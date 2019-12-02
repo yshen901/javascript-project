@@ -1,9 +1,9 @@
-import StaticObject from './resource';
+import StaticObject from './static_object';
 
 class Building extends StaticObject {
   constructor(pos, symbol) {
     super(pos, symbol);
-    this.level = 0;
+    this.level = 1;
   }
 }
 

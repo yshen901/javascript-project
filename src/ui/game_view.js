@@ -35,12 +35,10 @@ class GameView {
     let offset = 10;
     let pos = [e.y - offset, e.x - offset];
     if (this.insideMap(pos)) {
-      console.log(pos, this.building);
       this.map.handleClick(pos, this.building);
       this.building = null;
     } else if (this.insideBuildingsList(pos)) {
       this.building = this.buildingsList.handleClick(pos);
-      console.log(this.building);
     } else
       this.building = null;
   }
