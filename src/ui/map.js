@@ -69,19 +69,20 @@ class Map {
 
   drawNetwork() {
     let { ctx, graph } = this;
+
+    let { X, Y, SQUARE_SIZE } = this.map;
     let nodes = graph.AdjList.keys();
     
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
-    debugger;
     for (let node of nodes) {
-      debugger;
       let otherNodes = graph.AdjList.get(node);
       let [ y1, x1 ] = node.getPos();
       for (let otherNode of otherNodes) {
         let [ y2, x2 ] = otherNode.getPos();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
+        debugger;
+        ctx.moveTo(x1*SQUARE_SIZE + SQUARE_SIZE/2 + X, y1*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
+        ctx.lineTo(x2*SQUARE_SIZE + SQUARE_SIZE/2 + X, y2*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
         ctx.stroke();
       }
     }
