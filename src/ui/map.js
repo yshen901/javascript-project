@@ -56,15 +56,22 @@ class Map {
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
     for (let x = SQUARE_SIZE; x < WIDTH; x += SQUARE_SIZE) {
+      ctx.beginPath();
       ctx.moveTo(x + X, Y);
       ctx.lineTo(x + X, HEIGHT + Y);
       ctx.stroke();
+      ctx.closePath();
     }
 
+    ctx.strokeStyle = "gray";
+    ctx.lineWidth = 1;
     for (let y = SQUARE_SIZE; y < HEIGHT; y += SQUARE_SIZE) {
+      ctx.beginPath();
       ctx.moveTo(X, y + Y);
       ctx.lineTo(WIDTH + X, y + Y);
       ctx.stroke();
+      ctx.closePath();
+      // debugger;
     }
   }
 
@@ -74,7 +81,7 @@ class Map {
     let { X, Y, SQUARE_SIZE } = this.map;
     let nodes = graph.AdjList.keys();
     
-    ctx.strokeStyle = "gray";
+    ctx.strokeStyle = "skyblue";
     ctx.lineWidth = 1;
     for (let node of nodes) {
       let otherNodes = graph.AdjList.get(node);
@@ -82,9 +89,11 @@ class Map {
       for (let otherNode of otherNodes) {
         let [ y2, x2 ] = otherNode.getPos();
         // debugger;
+        ctx.beginPath();
         ctx.moveTo(x1*SQUARE_SIZE + SQUARE_SIZE/2 + X, y1*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
         ctx.lineTo(x2*SQUARE_SIZE + SQUARE_SIZE/2 + X, y2*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
         ctx.stroke();
+        ctx.closePath();
       }
     }
   }

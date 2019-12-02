@@ -21,9 +21,9 @@ class Graph {
         let spot = this.grid[y + dY][x + dX];
         console.log(spot);
         // if (spot && spot.getSymbol() === 'HQ') debugger;
-        if (spot && Math.sqrt(dX*dX + dY*dY) < spot.networkRange) {
-          debugger;
-          if (spot.connectable() || node.connectable()) this.addEdge(node, spot);
+        if (spot && spot.deletable ) {
+          if (spot.connectable && Math.sqrt(dX * dX + dY * dY) < spot.networkRange) this.addEdge(node, spot);
+          if (node.connectable && Math.sqrt(dX * dX + dY * dY) < node.networkRange) this.addEdge(node, spot);
         }
       }
   }
