@@ -1,8 +1,8 @@
 import Building from './building';
 
 class Connector extends Building {
-  constructor(pos, symbol) {
-    super(pos, symbol);
+  constructor(pos, symbol, graph) {
+    super(pos, symbol, graph);
     this.networkRange = 3;
   }
 

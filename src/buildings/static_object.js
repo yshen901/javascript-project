@@ -1,7 +1,9 @@
 class StaticObject {
-  constructor(pos, symbol) {
+  constructor(pos, symbol, graph) {
     this.pos = pos;
     this.symbol = symbol;
+    this.graph = graph; 
+
     this.deletable = false;
     this.networkRange = 0;
   }
@@ -13,8 +15,7 @@ class StaticObject {
   connectable() {
     return false;
   }
-
-  tick() {};
+  
 }
 
 export default StaticObject;

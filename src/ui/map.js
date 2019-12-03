@@ -1,6 +1,6 @@
+import HQ from "../buildings/hq";
 import Resource from '../buildings/static_object';
 import ResourceCollector from "../buildings/resource_collector";
-import HQ from "../buildings/hq";
 import Connector from '../buildings/connector';
 import Graph from '../data_structures/graph';
 
@@ -34,7 +34,7 @@ class Map {
         y = Math.floor(Math.random() * Math.floor(HEIGHT / SQUARE_SIZE));
         x = Math.floor(Math.random() * Math.floor(WIDTH / SQUARE_SIZE));
         if (this.grid[y][x]) continue;
-        this.grid[y][x] = new Resource([y, x], symbols[i]);
+        this.grid[y][x] = new Resource([y, x], symbols[i], this.graph);
         counter++;
       }
     }
@@ -42,8 +42,8 @@ class Map {
 
   drawAll() {
     this.drawGrid();
-    this.drawNetwork();
     this.drawElements();
+    this.drawNetwork();
   }
 
   drawGrid() {
@@ -84,16 +84,18 @@ class Map {
     ctx.strokeStyle = "skyblue";
     ctx.lineWidth = 1;
     for (let node of nodes) {
-      let otherNodes = graph.AdjList.get(node);
-      let [ y1, x1 ] = node.getPos();
-      for (let otherNode of otherNodes) {
-        let [ y2, x2 ] = otherNode.getPos();
-        // debugger;
-        ctx.beginPath();
-        ctx.moveTo(x1*SQUARE_SIZE + SQUARE_SIZE/2 + X, y1*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
-        ctx.lineTo(x2*SQUARE_SIZE + SQUARE_SIZE/2 + X, y2*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
-        ctx.stroke();
-        ctx.closePath();
+      if (node.getSymbol() === "HQ" || node.getSymbol() === "O") {
+        let otherNodes = graph.AdjList.get(node);
+        let [ y1, x1 ] = node.getPos();
+        for (let otherNode of otherNodes) {
+          let [ y2, x2 ] = otherNode.getPos();
+          // debugger;
+          ctx.beginPath();
+          ctx.moveTo(x1*SQUARE_SIZE + SQUARE_SIZE/2 + X, y1*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
+          ctx.lineTo(x2*SQUARE_SIZE + SQUARE_SIZE/2 + X, y2*SQUARE_SIZE + SQUARE_SIZE/2 + Y);
+          ctx.stroke();
+          ctx.closePath();
+        }
       }
     }
   }
@@ -169,12 +171,12 @@ class Map {
     switch (buildingSymbol) {
       case "HQ": 
         if (this.exists["HQ"]) return;
-        building = new HQ(pos, buildingSymbol); break;
+        building = new HQ(pos, buildingSymbol, this.graph); break;
       case "AC":
       case "BC":
-        building = new ResourceCollector(pos, buildingSymbol); break; 
+        building = new ResourceCollector(pos, buildingSymbol, this.graph); break; 
       case "O":
-        building = new Connector(pos, buildingSymbol); break;
+        building = new Connector(pos, buildingSymbol, this.graph); break;
     }
 
     this.grid[y][x] = building;

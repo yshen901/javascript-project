@@ -1,8 +1,8 @@
 import Building from './building';
 
 class HQ extends Building {
-  constructor(pos, symbol, grid) {
-    super(pos, symbol);
+  constructor(pos, symbol, graph) {
+    super(pos, symbol, graph);
     this.networkRange = 3;
   }
 
