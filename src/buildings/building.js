@@ -23,7 +23,7 @@ class Building extends StaticObject {
     else {
       debugger;
       let adjacentNodes = this.graph.AdjList.get(currentNode);
-      if (!adjacentNodes) return null;
+      if (!adjacentNodes) return [];
       debugger;
       for (let adjacentNode of adjacentNodes) {
          
